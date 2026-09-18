@@ -38,6 +38,8 @@ export default function HistoryScreen({
         </button>
       </div>
 
+      <p>Exercises are saved only in this browser. Clearing browser data removes them.</p>
+
       {exercises.length === 0 ? (
         <div className={styles.empty}>
           <p className={styles.emptyText}>No exercises yet. Start training!</p>

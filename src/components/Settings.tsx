@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { loadSettings, saveLocal, SETTINGS_KEY } from '../lib/storage';
 import type { ConeColor, ExerciseSettings } from '../types';
 import styles from './Settings.module.css';
 
@@ -18,30 +19,10 @@ const DEFAULT_COLORS: ConeColor[] = [
 const PRESET_TIMES = [60, 90, 120, 150, 180];
 
 export default function SettingsScreen({ onStartExercise }: SettingsScreenProps) {
-  const [duration, setDuration] = useState(() => {
-    const saved = localStorage.getItem('exerciseSettings');
-    if (saved) {
-      const parsed = JSON.parse(saved) as ExerciseSettings;
-      return parsed.duration;
-    }
-    return 60;
-  });
-  const [interval, setInterval] = useState(() => {
-    const saved = localStorage.getItem('exerciseSettings');
-    if (saved) {
-      const parsed = JSON.parse(saved) as ExerciseSettings;
-      return parsed.interval;
-    }
-    return 3;
-  });
-  const [cones, setCones] = useState<ConeColor[]>(() => {
-    const saved = localStorage.getItem('exerciseSettings');
-    if (saved) {
-      const parsed = JSON.parse(saved) as ExerciseSettings;
-      return parsed.cones;
-    }
-    return DEFAULT_COLORS;
-  });
+  const [savedSettings] = useState(loadSettings);
+  const [duration, setDuration] = useState(savedSettings?.duration ?? 60);
+  const [interval, setInterval] = useState(savedSettings?.interval ?? 3);
+  const [cones, setCones] = useState<ConeColor[]>(savedSettings?.cones ?? DEFAULT_COLORS);
   const [editingCone, setEditingCone] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const [editingColor, setEditingColor] = useState('');
@@ -69,7 +50,9 @@ export default function SettingsScreen({ onStartExercise }: SettingsScreenProps)
       interval,
       cones,
     };
-    localStorage.setItem('exerciseSettings', JSON.stringify(settings));
+    if (!saveLocal(SETTINGS_KEY, settings)) {
+      window.alert('Settings could not be saved to your browser. You can still start this exercise.');
+    }
     onStartExercise(settings);
   };
 

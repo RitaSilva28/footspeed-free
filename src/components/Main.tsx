@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { useState } from "react";
+import { HISTORY_KEY, loadHistory, saveLocal } from "../lib/storage";
 import {
   Settings as SettingsIcon,
   History as HistoryIcon,
-  LogOut,
 } from "lucide-react";
 import logo from "../assets/Logotitle.svg";
 import type { ExerciseSettings, CompletedExercise, Screen } from "../types";
@@ -13,94 +12,34 @@ import History from "./History";
 import Footer from "./Footer";
 import styles from "./Main.module.css";
 
-type MainAppProps = {
-  userEmail: string;
-  userId: string;
-};
-
-export default function MainApp({ userEmail, userId }: MainAppProps) {
+export default function MainApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("settings");
   const [currentSettings, setCurrentSettings] =
     useState<ExerciseSettings | null>(null);
-  const [exercises, setExercises] = useState<CompletedExercise[]>([]);
-
-  useEffect(() => {
-    async function loadHistory() {
-      const { data, error } = await supabase
-        .from("exercise_history")
-        .select("*")
-        .eq("user_id", userId)
-        .order("date", { ascending: false });
-
-      if (error) {
-        console.error("Error loading history:", error);
-        return;
-      }
-
-      const mappedExercises: CompletedExercise[] = data.map((item) => ({
-        id: item.id,
-        date: new Date(item.date),
-        duration: item.duration,
-        interval: item.interval,
-        conesCount: item.cones_count,
-        colorSequence: item.color_sequence,
-      }));
-
-      setExercises(mappedExercises);
-    }
-
-    loadHistory();
-  }, [userId]);
+  const [initialHistory] = useState(loadHistory);
+  const [exercises, setExercises] = useState(initialHistory.exercises);
+  const [storageError, setStorageError] = useState(initialHistory.error);
 
   const handleStartExercise = (settings: ExerciseSettings) => {
     setCurrentSettings(settings);
     setCurrentScreen("exercise");
   };
 
-  const handleCompleteExercise = async (exercise: CompletedExercise) => {
-    const { data, error } = await supabase
-      .from("exercise_history")
-      .insert({
-        user_id: userId,
-        date: exercise.date.toISOString(),
-        duration: exercise.duration,
-        interval: exercise.interval,
-        cones_count: exercise.conesCount,
-        color_sequence: exercise.colorSequence,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Error saving exercise:", error);
-      return;
-    }
-
-    const savedExercise: CompletedExercise = {
-      id: data.id,
-      date: new Date(data.date),
-      duration: data.duration,
-      interval: data.interval,
-      conesCount: data.cones_count,
-      colorSequence: data.color_sequence,
-    };
-
-    setExercises((prev) => [savedExercise, ...prev]);
+  const handleCompleteExercise = (exercise: CompletedExercise) => {
+    const updated = [exercise, ...exercises];
+    const saved = saveLocal(HISTORY_KEY, updated);
+    setStorageError(saved ? null : "This exercise could not be saved to your browser. It is available only in this session.");
+    setExercises(updated);
     setCurrentScreen("settings");
   };
 
-  const handleClearHistory = async () => {
-    const { error } = await supabase
-      .from("exercise_history")
-      .delete()
-      .eq("user_id", userId);
-
-    if (error) {
-      console.error("Error clearing history:", error);
+  const handleClearHistory = () => {
+    if (!saveLocal(HISTORY_KEY, [])) {
+      setStorageError("History could not be cleared from your browser. Please try again.");
       return;
     }
-
     setExercises([]);
+    setStorageError(null);
   };
 
   const handleCancelExercise = () => {
@@ -141,26 +80,11 @@ export default function MainApp({ userEmail, userId }: MainAppProps) {
       </button>
     </div>
 
-    <button
-      onClick={() => {
-        const confirmLogout = window.confirm(
-          "Are you sure you want to sign out?"
-        );
-
-        if (confirmLogout) {
-          supabase.auth.signOut();
-        }
-      }}
-      className={styles.navBtn}
-      aria-label="Sign out"
-    >
-      <span className={styles.userEmail}>{userEmail.split("@")[0]}</span>
-      <LogOut size={24} />
-    </button>
   </div>
 </nav>
 
       <main className={styles.content}>
+        {storageError && <p role="alert">{storageError}</p>}
         {currentScreen === "settings" && (
           <Settings onStartExercise={handleStartExercise} />
         )}
