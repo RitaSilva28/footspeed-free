@@ -73,15 +73,16 @@ min-height: auto;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: 10px;
-	padding: 0.75rem 1.5rem;
+	gap: 0.5rem;
+	min-height: 48px;
+	padding: 0.75rem 1.25rem;
 	border: none;
 	background: transparent;
-	color: #ffffff;
+	color: #b8bcc4;
 	font-size: 0.95rem;
 	font-weight: 600;
 	cursor: pointer;
-	transition: all 0.3s ease;
+	transition: color 0.2s ease, background-color 0.2s ease;
 	border-radius: 8px;
 	position: relative;
 	text-transform: uppercase;
@@ -94,13 +95,65 @@ min-height: auto;
 }
 
 .navBtn.active {
-	background: #ffffff;
-	color: #000;
+	color: #ffffff;
+}
+
+.navBtn::after {
+	content: '';
+	position: absolute;
+	bottom: 3px;
+	left: 1.25rem;
+	right: 1.25rem;
+	height: 2px;
+	border-radius: 2px;
+	background: transparent;
+}
+
+.navBtn.active::after {
+	background: #ee5a2f;
+}
+
+.navBtn:focus-visible {
+	outline: 2px solid #ee5a2f;
+	outline-offset: 3px;
+}
+
+.navBtn svg {
+	flex-shrink: 0;
 }
 
 .navBtn:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
+}
+
+/* Desktop tabs: reserve the gradient divider as the header's only line. */
+@media (width > 768px) {
+	.navBtn::after {
+		display: none;
+	}
+
+	.navBtn.active {
+		background: #222222;
+	}
+
+	.navBtn.active svg {
+		color: inherit;
+	}
+
+	.navBtn:hover:not(:disabled):not(.active) {
+		background: #1a1a1a;
+		color: #b8bcc4;
+	}
+
+	.navBtn.active:hover:not(:disabled) {
+		background: #2b2b2b;
+	}
+
+	.navBtn:focus-visible {
+		outline: none;
+		background: #404040;
+	}
 }
 
 /* EMAIL */
@@ -161,14 +214,30 @@ min-height: auto;
 	}
 
 	.navLeft {
-		display: flex;
-		gap: 0.5rem;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		width: 100%;
+		gap: 4px;
+		padding: 4px;
+		background: #1a1a1a;
+		border: 1px solid #383838;
+		border-radius: 12px;
 	}
 
 	.navBtn {
-		padding: 0.40rem 0.60rem;
-		font-size: 0.6rem;
-		border-radius: 4px;
+		min-width: 0;
+		min-height: 48px;
+		padding: 0.75rem 0.5rem;
+		font-size: 0.85rem;
+		border-radius: 8px;
+	}
+
+	.navBtn.active {
+		background: #303030;
+	}
+
+	.navBtn::after {
+		display: none;
 	}
 
 	.userEmail {
@@ -181,3 +250,43 @@ min-height: auto;
 		padding: 1rem;
 	}
 }
+:global(html.native-android) .app {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+:global(html.native-android) .content {
+  min-height: 0;
+  flex: 1 0 auto;
+}
+
+.storageNotice {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: #222;
+  color: #dedede;
+}
+.storageNotice p { flex: 1; min-width: 0; margin: 0; }
+.dismissNotice {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.dismissNotice:hover { background: #383838; }
+.dismissNotice:focus-visible { outline: 2px solid #ee5a2f; outline-offset: 2px; }

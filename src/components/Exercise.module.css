@@ -276,3 +276,26 @@
 		font-size: 1rem;
 	}
 }
+
+.resultsDialog {
+  margin: auto;
+  width: min(460px, calc(100% - 2rem));
+  max-height: calc(100dvh - 3rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow-y: auto;
+  padding: 1.5rem;
+  color: #fff;
+  background: #191d1e;
+  border: 1px solid #45494a;
+  border-radius: 16px;
+  text-align: center;
+}
+.resultsDialog::backdrop { background: rgba(0, 0, 0, 0.75); }
+.resultsIcon { color: #ee5a2f; margin-bottom: 0.75rem; }
+.resultsDialog h2 { font-size: 1.6rem; margin: 0; }
+.resultsIntro { color: #b6b9bc; margin: 0.75rem 0 1.5rem; }
+.resultsStats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin: 0 0 1.5rem; }
+.resultsStats > div { background: #25292a; border-radius: 10px; padding: 1rem 0.5rem; }
+.resultsStats dt { color: #b6b9bc; font-size: 0.85rem; }
+.resultsStats dd { margin: 0.5rem 0 0; font-size: 1.5rem; font-weight: 700; }
+.resultsDone { width: 100%; min-height: 48px; padding: 0.75rem; border: none; border-radius: 10px; background: #ee5a2f; color: #121212; font: inherit; font-weight: 700; cursor: pointer; }
+.resultsDone:focus-visible { outline: 2px solid white; outline-offset: 3px; }

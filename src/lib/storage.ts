@@ -1,4 +1,5 @@
-import type { CompletedExercise, ExerciseSettings } from '../types';
+import { createPreferences } from './cones';
+import type { CompletedExercise, ExerciseSettings, TrainingPreferences } from '../types';
 
 export const HISTORY_KEY = 'exerciseHistory';
 export const SETTINGS_KEY = 'exerciseSettings';
@@ -50,7 +51,7 @@ export function saveLocal(key: string, value: unknown): boolean {
   }
 }
 
-export function loadSettings(): ExerciseSettings | null {
+export function loadSettings(): TrainingPreferences | null {
   try {
     const saved = read(SETTINGS_KEY);
     if (!isRecord(saved) || !isPositive(saved.duration) || saved.duration < 10 || saved.duration > 300 ||
@@ -58,7 +59,7 @@ export function loadSettings(): ExerciseSettings | null {
       saved.cones.length === 0 || !saved.cones.every((cone) => isColor(cone) && isRecord(cone) && typeof cone.id === 'string')) {
       return null;
     }
-    return saved as unknown as ExerciseSettings;
+    return createPreferences(saved as unknown as ExerciseSettings & { coneCount?: number });
   } catch {
     return null;
   }

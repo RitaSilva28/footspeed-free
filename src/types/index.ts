@@ -10,6 +10,11 @@ export interface ExerciseSettings {
   cones: ConeColor[];
 }
 
+// Stored palette includes hidden cones; ExerciseSettings contains only active cones.
+export interface TrainingPreferences extends ExerciseSettings {
+  coneCount: number;
+}
+
 export interface CalledColor {
   name: string;
   color: string;
@@ -22,6 +27,7 @@ export interface CompletedExercise {
   interval: number;
   conesCount: number;
   colorSequence: CalledColor[];
+  configuredCones?: ConeColor[];
 }
 
 export type Screen = "settings" | "exercise" | "history";

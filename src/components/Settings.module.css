@@ -26,7 +26,8 @@
 	background-clip: text;
 }
 
-.settingsGroup {
+.settingsGroup,
+.conesSection {
 	background: rgba(255, 255, 255, 0.05);
 	border: 1px solid rgba(255, 255, 255, 0.2);
 	border-radius: 16px;
@@ -193,9 +194,6 @@
 	text-align: center;
 }
 
-.conesSection {
-	margin-bottom: 2rem;
-}
 
 .subtitle {
 	font-size: 1.3rem;
@@ -206,139 +204,272 @@
 	color: #e0e0e0;
 }
 
+.coneCountSelector {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  min-width: 0;
+}
+
+.coneCountSelector legend {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c7c7c7;
+  margin-bottom: 0.75rem;
+}
+
+.coneCountOptions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+  max-width: 360px;
+}
+
+.coneCountOption {
+  position: relative;
+  cursor: pointer;
+}
+
+.coneCountOption input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.coneCountOption span {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid #484848;
+  background: #202020;
+  color: #d0d0d0;
+  font-weight: 700;
+}
+
+.coneCountOption input:checked + span {
+  background: #ee5a2f;
+  border-color: #ee5a2f;
+  color: #121212;
+}
+
+.coneCountOption input:focus-visible + span,
+.editBtn:focus-visible,
+.editConeSaveBtn:focus-visible,
+.editConeCancelBtn:focus-visible {
+  outline: 2px solid #ee5a2f;
+  outline-offset: 3px;
+}
+
+.coneCountOption:hover span {
+  border-color: #ee5a2f;
+}
+
 .conesGrid {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 0.75rem;
-	margin-bottom: 2rem;
+  --cone-columns: 3;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.75rem;
+}
+
+.conesGrid[data-count='2'],
+.conesGrid[data-count='4'] {
+  --cone-columns: 2;
+}
+
+@media (min-width: 1000px) {
+  .conesGrid[data-count='4'] {
+    --cone-columns: 4;
+  }
 }
 
 .coneCard {
-	background: rgba(255, 255, 255, 0.05);
-	border: 2px solid rgba(255, 255, 255, 0.2);
-	border-radius: 12px;
-	padding: 0.75rem;
-	text-align: center;
-	transition: all 0.3s ease;
-	backdrop-filter: blur(10px);
+  position: relative;
+  width: calc((100% - (var(--cone-columns) - 1) * 0.75rem) / var(--cone-columns));
+  min-width: 0;
+  min-height: 144px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem 0.75rem 0.75rem;
+  text-align: center;
+}
 
-	&:hover {
-		border-color: #ffffff;
-		background: rgba(255, 255, 255, 0.05);
-	}
+.coneCard:focus-within {
+  border-color: #ee5a2f;
 }
 
 .colorBox {
-	width: 50px;
-	height: 50px;
-	border-radius: 6px;
-	margin: 0 auto 0.5rem;
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	transition: transform 0.3s ease;
-
-	.coneCard:hover & {
-		transform: scale(1.05);
-	}
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  margin: 0 auto 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .coneName {
-	font-weight: 700;
-	margin-bottom: 0.5rem;
-	font-size: 0.9rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .editBtn {
-	padding: 0.35rem 0.75rem;
-	border: 1px solid rgba(255, 255, 255, 0.4);
-	background: transparent;
-	color: #ffffff;
-	border-radius: 4px;
-	font-size: 0.75rem;
-	font-weight: 600;
-	cursor: pointer;
-	transition: all 0.3s ease;
-	text-transform: uppercase;
-	letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #bdbdbd;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-	&:hover {
-		background: rgba(255, 255, 255, 0.1);
-		border-color: #ffffff;
-	}
+.coneCard .editBtn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.editBtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.editConeDialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(440px, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  max-height: calc(100dvh - 2rem - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  border: 1px solid #484848;
+  border-radius: 16px;
+  background: #1b1b1b;
+  color: #ffffff;
+  padding: 1.25rem;
+}
+
+.editConeDialog::backdrop {
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .editConeForm {
-	background: rgba(255, 255, 255, 0.05);
-	border: 1px solid rgba(255, 255, 255, 0.2);
-	border-radius: 12px;
-	padding: 1.5rem;
-	margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.editFormRow {
-	display: flex;
-	gap: 1rem;
-	align-items: center;
-	flex-wrap: wrap;
+.editHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.editHeading h2 {
+  font-size: 1.25rem;
+}
+
+.editConeForm label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .editConeInput {
-	flex: 1;
-	min-width: 150px;
-	padding: 0.75rem;
-	border: 1px solid rgba(255, 255, 255, 0.4);
-	background: rgba(0, 0, 0, 0.3);
-	border-radius: 8px;
-	color: #ffffff;
-	font-size: 0.95rem;
-	font-weight: 600;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #626262;
+  background: #121212;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+}
 
-	&:focus {
-		outline: none;
-		border-color: #ffffff;
-		box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
-	}
+.editConeInput:focus-visible,
+.editConeColorPicker:focus-visible {
+  outline: 2px solid #ee5a2f;
+  outline-offset: 2px;
+}
+
+.editHelp {
+  color: #bdbdbd;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.editColors {
+  display: flex;
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.editColors label {
+  margin-bottom: 0.5rem;
+}
+
+.hexField {
+  flex: 1;
+  min-width: 0;
 }
 
 .editConeColorPicker {
-	width: 60px;
-	height: 50px;
-	border: 1px solid rgba(255, 255, 255, 0.4);
-	border-radius: 8px;
-	cursor: pointer;
+  display: block;
+  width: 56px;
+  height: 44px;
+  padding: 2px;
+  border: 1px solid #626262;
+  background: #121212;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.editActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.editConeSaveBtn,
+.editConeCancelBtn {
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border: 1px solid #626262;
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .editConeSaveBtn {
-	padding: 0.5rem 1rem;
-	background: #ffffff;
-	border: none;
-	color: #000;
-	border-radius: 8px;
-	font-weight: 700;
-	cursor: pointer;
-	transition: all 0.3s ease;
-	font-size: 1.2rem;
-
-	&:hover {
-		background: #ee5a2f;
-		transform: scale(1.05);
-	}
+  background: #ee5a2f;
+  border-color: #ee5a2f;
+  color: #121212;
 }
 
-.editConeCancelBtn {
-	padding: 0.5rem 0.75rem;
-	background: transparent;
-	border: 2px solid rgba(255, 100, 100, 0.4);
-	color: #ff6464;
-	border-radius: 8px;
-	font-weight: 700;
-	cursor: pointer;
-	transition: all 0.3s ease;
-	font-size: 1.2rem;
+@media (max-width: 768px) {
+  .conesGrid[data-count] {
+    --cone-columns: 2;
+  }
+}
 
-	&:hover {
-		background: rgba(255, 100, 100, 0.1);
-		border-color: #ff6464;
-	}
+@media (max-width: 379px) {
+  .conesGrid[data-count] {
+    --cone-columns: 1;
+  }
 }
 
 .startBtn {
@@ -376,12 +507,8 @@
 		font-size: 2rem;
 	}
 
-	.conesGrid {
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1rem;
-	}
-
-	.settingsGroup {
+	.settingsGroup,
+	.conesSection {
 		padding: 1.5rem;
 	}
 }

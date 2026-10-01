@@ -1,17 +1,18 @@
-import { Trash as DeleteIcon } from "lucide-react";
+import { History as HistoryIcon, Info, Trash as DeleteIcon } from "lucide-react";
+import { isAndroid } from "../lib/native";
 import type { CompletedExercise } from "../types";
 import styles from "./History.module.css";
 
 interface HistoryScreenProps {
   exercises: CompletedExercise[];
-  onBack: () => void;
   onClearHistory: () => void;
+  onStartTraining: () => void;
 }
 
 export default function HistoryScreen({
   exercises,
-  onBack,
   onClearHistory,
+  onStartTraining,
 }: HistoryScreenProps) {
   const formatTime = (date: Date) => {
     return new Intl.DateTimeFormat("en-US", {
@@ -32,17 +33,16 @@ export default function HistoryScreen({
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Exercise History</h1>
-
-        <button onClick={onBack} className={styles.backBtn}>
-          ← Back
-        </button>
       </div>
-
-      <p>Exercises are saved only in this browser. Clearing browser data removes them.</p>
 
       {exercises.length === 0 ? (
         <div className={styles.empty}>
-          <p className={styles.emptyText}>No exercises yet. Start training!</p>
+          <HistoryIcon size={32} className={styles.emptyIcon} aria-hidden="true" />
+          <h2 className={styles.emptyTitle}>No exercises yet</h2>
+          <p className={styles.emptyText}>Your completed training sessions will appear here.</p>
+          <button type="button" className={styles.emptyAction} onClick={onStartTraining}>
+            Start your first training session
+          </button>
         </div>
       ) : (
         <>
@@ -99,6 +99,13 @@ export default function HistoryScreen({
             Clear History
           </button>
         </>
+      )}
+
+      {!isAndroid && (
+        <p className={styles.storageNote}>
+          <Info size={16} aria-hidden="true" />
+          <span>Saved in this browser only. Clearing browser data removes your history.</span>
+        </p>
       )}
     </div>
   );

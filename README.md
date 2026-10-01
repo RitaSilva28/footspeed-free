@@ -18,3 +18,7 @@ Exercise settings (`exerciseSettings`) and completed exercise history (`exercise
 Data belongs to the current browser and site address; it does not sync between devices. Clearing site data removes saved exercises. Existing Supabase history is not automatically imported. If browser storage is unavailable or full, completed exercises remain available for the current session and the app displays a save error.
 
 The `supabase` directory contains legacy backend files and is not required by this app.
+
+## Android app
+
+The existing React app is also packaged with Capacitor 8 for Android. Run `npm run android:sync`, then `npm run android:open`. See [Android setup, emulator testing, and Google Play signing](docs/ANDROID.md) for JDK 21 setup, build commands, and release steps.
