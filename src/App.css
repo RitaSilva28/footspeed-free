@@ -329,3 +329,21 @@
 }
 
 }
+.app-footer {
+  opacity: 1;
+  color: #a6a6a6;
+}
+
+.footer-credit {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #e0e0e0;
+  white-space: nowrap;
+}
+
+.footer-credit-dot {
+  color: #ee5a2f;
+  font-size: 1.3em;
+  line-height: 0;
+}
